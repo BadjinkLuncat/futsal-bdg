@@ -39,6 +39,7 @@ class Reservasi_model extends CI_Model {
 
     public function transaksi($id){
         $this->db->where('reservasi.id',$id);
+        $this->db->select('reservasi.*, transaksi.id as id_transaksi, transaksi.gambar as gambar, transaksi.status as status_transaksi');
         $this->db->join('transaksi', 'reservasi.id=transaksi.id_reservasi', 'left');
         $query = $this->db->get($this->table);
         return $query->row();
@@ -48,6 +49,7 @@ class Reservasi_model extends CI_Model {
         $this->db->join('detail_lapang', 'detail_lapang.id=reservasi.id_detail_lapang', 'inner');
         $this->db->join('harga_lapang', 'detail_lapang.id=harga_lapang.id_detail_lapang', 'left');
         $this->db->join('lapang', 'lapang.id=detail_lapang.id_lapang', 'left');
+        $this->db->select('reservasi.*, lapang.nama as nama_lapang, lapang.alamat as alamat_lapang, lapang.telepon as telepon_lapang, detail_lapang.harga as harga_lapang');
         $this->db->where('kode_reservasi',$where);
         $query = $this->db->get($this->table);
         return $query->row();

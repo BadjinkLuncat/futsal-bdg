@@ -67,7 +67,7 @@ $this->load->view('backend/template/sidebar');
                       $hideLunas='';
                       $status='Belum ada konfirmasi';
                     }else if ($value->status==1){
-                      $hideKonfirmasi='hide';
+                      $hideKonfirmasi='';
                       $hideLunas='';
                       $status='Konfirmasi';
                     }else if ($value->status==2){

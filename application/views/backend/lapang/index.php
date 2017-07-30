@@ -135,7 +135,7 @@ $this->load->view('backend/template/js');
         var longitude=Number(document.getElementById('longitude').value);
         var uluru = {lat:latitude , lng: longitude};
         var map = new google.maps.Map(document.getElementById('field-map'), {
-          zoom: 6,
+          zoom: 16,
           center: uluru
         });
         var marker = new google.maps.Marker({

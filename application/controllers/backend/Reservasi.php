@@ -64,7 +64,6 @@ class Reservasi extends CI_Controller {
         $update['status']=3;
         $this->load->model('reservasi_model');
         $updateStatus=$this->reservasi_model->update($update,$id);
-        var_dump($updateStatus);
         $reservasi=$this->reservasi_model->find($id);
         $this->load->model('transaksi_model');
         $this->transaksi_model->update($update,$reservasi->id);

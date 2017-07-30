@@ -31,7 +31,7 @@ class Reservasi extends CI_Controller {
         $data['user']=$_SERVER['REMOTE_ADDR'];
         $data['id_detail_lapang']=$detail_lapang->id;
         $data['harga']=$detail_lapang->harga;
-        $data['tanggal_reservasi']=date_format('Y-m-d G:i:s', date_create(date('Y-m-d').' '.$this->input->post('jam')));
+        $data['tanggal_reservasi']=date('Y-m-d').' '.$this->input->post('jam');
         $this->load->model('temp_transaksi_model');
         $this->temp_transaksi_model->deletes($_SERVER['REMOTE_ADDR']);
         $temp=$this->temp_transaksi_model->insert($data);
@@ -99,8 +99,7 @@ class Reservasi extends CI_Controller {
             $detail_lapang=$this->detail_lapang_model->find($this->input->post('id_detail_lapang'));
             $this->load->model('lapang_model');
             $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
-            $reservasi=$this->reservasi_model->find($reservasi->id);
-            $this->sendEmail($reservasi,$detail_lapang,$lapang,$user);
+            $this->sendEmail($lapang,$user);
             redirect(base_url('/'),'refresh');
         }
     }
@@ -121,10 +120,10 @@ class Reservasi extends CI_Controller {
         $this->email->set_newline("\r\n");
         $htmlContent = '<h3>Konfirmasi Reservasi Lapang Futsal</h3>';
         $htmlContent .= '<br>';
-        $htmlContent .= '<p>Nama           : '.$reservasi->nama_user.'</p>';
-        $htmlContent .= '<p>Kode Reservasi : '.$reservasi->kode_reservasi.'</p>';
+        $htmlContent .= '<p>Nama           : '.$reservasi['nama_user'].'</p>';
+        $htmlContent .= '<p>Kode Reservasi : '.$reservasi['kode_reservasi'].'</p>';
         $htmlContent .= '<p>Nama Lapang    : '.$lapang->nama.'</p>';
-        $htmlContent .= '<p>Tanggal & Waktu Reservasi : '.$reservasi->tanggal_reservasi.'</p>';
+        $htmlContent .= '<p>Tanggal & Waktu Reservasi : '.$reservasi['tanggal_reservasi'].'</p>';
         $htmlContent .= '<br>';
         $htmlContent .= '<p>Silahkan Untuk Melakukan Pembayaran uang muka ke Rek : 625845458552 a.n Booking Futsal, Terima kasih</p>';
         $this->email->to($user->email);

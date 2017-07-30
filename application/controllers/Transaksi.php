@@ -59,7 +59,7 @@ class Transaksi extends CI_Controller {
         $data['status']=1;
         $reservasiUpdate=$this->reservasi_model->updatereservasi($data,$this->input->post('kode_reservasi'));
         $reservasi=$this->reservasi_model->cari_kode($this->input->post('kode_reservasi'));
-
+        $detail_lapang=$this->detail_lapang_model->find($reservasi->id_detail_lapang);
         $file_name=rand(100,1000).'_'.date('YmdGis');
         $config['upload_path']   = 'assets/uploads/'; 
         $config['allowed_types'] = 'gif|jpg|png'; 
@@ -80,15 +80,15 @@ class Transaksi extends CI_Controller {
         }
         $transaksi['no_transaksi']='P'.date('YmdGis');
         $transaksi['id_reservasi']=$reservasi->id;
-        $transaksi['harga']=$reservasi->harga;
+        $transaksi['harga']=$detail_lapang->harga;
         $this->load->model('transaksi_model');
         $this->transaksi_model->insert($transaksi);
         $data['transaksi']=$reservasi;
         $user=$this->ion_auth_model->user($reservasi->id_user)->row();
         $detail_lapang=$this->detail_lapang_model->find($reservasi->id_detail_lapang);
         $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
-        $this->sendEmail($reservasi,$detail_lapang,$lapang,$user);
-        $this->sendEmailToAdmin($reservasi,$detail_lapang,$lapang,$user);
+        // $this->sendEmail($reservasi,$detail_lapang,$lapang,$user);
+        // $this->sendEmailToAdmin($reservasi,$detail_lapang,$lapang,$user);
         $data['login']=$this->login;
         $this->load->view('frontend/konfirmasi_pembayaran',$data);
     }

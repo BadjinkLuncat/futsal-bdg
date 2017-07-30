@@ -142,7 +142,6 @@
                           <th>Nama Lapang</th>
                           <th>Harga</th>
                           <th>Status</th>
-                          <th>Konfirmasi</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -150,11 +149,11 @@
                           <td>1</td>
                           <td><?php echo $transaksi->kode_reservasi ?></td>
                           <td><?php echo $transaksi->nama_user ?></td>
-                          <td><p><b><?php echo $transaksi->nama ?></b></p>
-                          <p>Alamat : <?php echo $transaksi->alamat ?></p>
-                          <p>Telepon : <?php echo $transaksi->telepon ?></p>
+                          <td><p><b><?php echo $transaksi->nama_lapang ?></b></p>
+                          <p>Alamat : <?php echo $transaksi->alamat_lapang ?></p>
+                          <p>Telepon : <?php echo $transaksi->telepon_lapang ?></p>
                           </td>
-                          <td><?php echo $transaksi->harga ?></td>
+                          <td><?php echo $transaksi->harga_lapang ?></td>
                           <?php 
                             $hideBtn='hide';
                             if ($transaksi->status==0){
@@ -172,7 +171,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <form enctype="multipart/form-data" action="<?php echo base_url('konfirmasi-pembayaran/konfirmasi') ?>" method="post">    
+                  <form enctype="multipart/form-data" action="<?php echo base_url('konfirmasi-pembayaran/konfirmasi') ?>" method="post" class="<?php echo $hideBtn ?>">    
                       <input type="file" name="image" class="form-control" id="imageUpload" onchange="makeFileList()">
                       <input style="width:80%" type="hidden" name="kode_reservasi" id="kode_reservasi" value="<?php echo $transaksi->kode_reservasi ?>">
                       <input type="submit" class="btn btn-sm btn-primary <?php echo $hideBtn ?>" value="Konfirmasi"> 

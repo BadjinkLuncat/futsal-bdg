@@ -27,11 +27,14 @@ class Lapang extends CI_Controller {
         $this->load->model('detail_lapang_model');
         $detail_lapang=$this->detail_lapang_model->get($id);
         $this->load->model('reservasi_model');
-        $booking=$this->reservasi_model->getByField($id);
+        $date="2017-07-31";
+        $booking=$this->reservasi_model->getByField($id,$date);
         $data['lapang']=$lapang;
+
         $data['peta']=explode(',', $lapang->lat_long);
         $data['detail_lapang']=$detail_lapang;
         $jadwal=[];
+        var_dump($booking);
         foreach ($detail_lapang as $key => $value) {
             $open=intval(date('G',strtotime($lapang->buka)));
             $close=intval(date('G',strtotime($lapang->tutup)));
@@ -42,10 +45,10 @@ class Lapang extends CI_Controller {
                 $jadwal[$key][$open]['number']=$i++;
                 $jadwal[$key][$open]['jam']=$hour;
                 $jadwal[$key][$open]['status']='Kosong';
-                if (date('G',mktime($open,0,0,0,0,0)) <= date('G') ){
-                    $jadwal[$key][$open]['status']='Tidak Tersedia';
-                    $jadwal[$key][$open]['jam']=$hour;
-                }
+                // if (date_create(date('Y-m-d ').$hour) <= date('Y-m-d G:i') || date('G',mktime($open,0,0,0,0,0)) <= date('G') ){
+                //     $jadwal[$key][$open]['status']='Tidak Tersedia';
+                //     $jadwal[$key][$open]['jam']=$hour;
+                // }
 
                 if ($booking){
                     foreach ($booking as $k => $val) {
