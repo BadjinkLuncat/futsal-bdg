@@ -68,6 +68,8 @@ class Reservasi extends CI_Controller {
             $this->load->model('lapang_model');
             $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
             $data['login']=$this->login;
+            $this->load->model('temp_transaksi_model');
+            $booking=$this->temp_transaksi_model->deletes($_SERVER['REMOTE_ADDR']);
             $data['booking']=[];
             $this->load->view('frontend/keranjang_booking',$data);
         }
@@ -80,10 +82,18 @@ class Reservasi extends CI_Controller {
         $email=$this->input->post('email');
         $additional_data=['nama'=>$this->input->post('nama'),'telepon'=>$this->input->post('telepon')];
         $groups=[4];
+        $check=$this->ion_auth_model->email_check($email);
+        if ($check){
+            $reservasi['kode_reservasi']=$this->input->post('kode_reservasi');
+            $reservasi['id_detail_lapang']=$this->input->post('id_detail_lapang');
+            $reservasi['tanggal_reservasi']=$this->input->post('tanggal_reservasi');
+            $reservasi['login']=$this->login;
+            $this->load->view('frontend/login-checkout',$reservasi);
+        }
         $userRegister=$this->ion_auth_model->register($identity, $password, $email, $additional_data,$groups);
         if ($userRegister!=false){
-            $this->ion_auth->login($this->input->post('email'), $password);
             $this->load->library(array('ion_auth'));
+            $this->ion_auth->login($this->input->post('email'), $password);
             $user = $this->ion_auth->user()->row();
             $reservasi['kode_reservasi']=$this->input->post('kode_reservasi');
             $reservasi['id_user']=$user->id;
@@ -94,14 +104,44 @@ class Reservasi extends CI_Controller {
             $reservasi['status']=0;
             $reservasi['tanggal_reservasi']=$this->input->post('tanggal_reservasi');
             $this->load->model('reservasi_model');
-            $reservasi=$this->reservasi_model->insert($reservasi);
+            $this->reservasi_model->insert($reservasi);
             $this->load->model('detail_lapang_model');
             $detail_lapang=$this->detail_lapang_model->find($this->input->post('id_detail_lapang'));
             $this->load->model('lapang_model');
             $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
-            $this->sendEmail($lapang,$user);
+            $this->sendEmail($reservasi,$detail_lapang,$lapang,$user);
+            $this->load->model('temp_transaksi_model');
+            $booking=$this->temp_transaksi_model->deletes($_SERVER['REMOTE_ADDR']);
             redirect(base_url('/'),'refresh');
         }
+    }
+
+    public function checkoutLogin() {
+        $this->load->model('ion_auth_model');
+        $identity=$this->input->post('email');
+        $password=$this->input->post('password');
+        $email=$this->input->post('email');
+        $this->load->library(array('ion_auth'));
+        $this->ion_auth->login($this->input->post('email'), $password);
+        $user = $this->ion_auth->user()->row();
+        $reservasi['kode_reservasi']=$this->input->post('kode_reservasi');
+        $reservasi['id_user']=$user->id;
+        $reservasi['nama_user']=$user->nama;
+        $reservasi['email']=$user->email;
+        $reservasi['no_hp']=$user->telepon;
+        $reservasi['id_detail_lapang']=$this->input->post('id_detail_lapang');
+        $reservasi['status']=0;
+        $reservasi['tanggal_reservasi']=$this->input->post('tanggal_reservasi');
+        $this->load->model('reservasi_model');
+        $this->reservasi_model->insert($reservasi);
+        $this->load->model('detail_lapang_model');
+        $detail_lapang=$this->detail_lapang_model->find($this->input->post('id_detail_lapang'));
+        $this->load->model('lapang_model');
+        $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
+        $this->sendEmail($reservasi,$detail_lapang,$lapang,$user);
+        $this->load->model('temp_transaksi_model');
+        $booking=$this->temp_transaksi_model->deletes($_SERVER['REMOTE_ADDR']);
+        redirect(base_url('/'),'refresh');
     }
 
     function sendEmail($reservasi,$detail_lapang,$lapang,$user) {

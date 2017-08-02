@@ -54,10 +54,9 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['/'] = 'home';
-$route['auth/login'] = 'auth/login';
-$route['auth/login/post'] = 'auth/postlogin';
+$route['auth/login'] = 'auth/userlogin';
 $route['auth/logout'] = 'auth/logout';
-$route['auth/register'] = 'auth/regsiter';
+$route['auth/register'] = 'auth/register';
 $route['auth/register/insert'] = 'auth/postregister';
 
 $route['tentang-kami'] = 'tentang';
@@ -73,6 +72,7 @@ $route['cari-lapang'] = 'lapang/cari';
 $route['booking'] = 'reservasi/booking';
 $route['booking/checkout'] = 'reservasi/checkout';
 $route['reservasi/register-checkout'] = 'reservasi/checkoutregister';
+$route['reservasi/login-checkout'] = 'reservasi/checkoutlogin';
 
 $route['artikel'] = 'artikel';
 $route['artikel/(:num)'] = 'artikel/detail/$1';

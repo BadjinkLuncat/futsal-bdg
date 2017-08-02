@@ -105,9 +105,9 @@
   <!-- CONTENT -->
   <section class="content">
     <div class="container">
-      <form action="<?php echo base_url('auth/register/insert') ?>" method="post" enctype="multipart/form-data">
+      <form action="<?php echo base_url('owner/register/create') ?>" method="post" enctype="multipart/form-data">
         <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#user">Registrasi User</a></li>
+          <li class="active"><a data-toggle="tab" href="#user">Registrasi Owner</a></li>
           <li><a data-toggle="tab" href="#field">Registrasi Lapang</a></li>
         </ul>
 

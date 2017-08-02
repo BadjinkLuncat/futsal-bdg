@@ -13,13 +13,37 @@ class Auth extends CI_Controller {
 
 		$this->lang->load('auth');
 	}
-	public function login(){
-		$this->load->view('login');
-	}
 
 	public function register(){
-		$this->load->view('register-user');
+		$this->load->view('frontend/register');
 	}
+
+	public function postregister()
+    {
+        $this->load->model('ion_auth_model');
+        $identity=$this->input->post('email');
+        $password=$this->input->post('password');
+        $email=$this->input->post('email');
+        $additional_data=['nama'=>$this->input->post('nama'),'telepon'=>$this->input->post('telepon')];
+        $groups=[4];
+        $userRegister=$this->ion_auth_model->register($identity, $password, $email, $additional_data,$groups);
+        redirect(base_url('/'),'refresh');
+    }
+
+    public function userlogin()
+    {
+        if ($this->ion_auth->login($this->input->post('email'), $this->input->post('password'))){
+            $this->session->set_flashdata('message', $this->ion_auth->messages());
+            redirect(base_url('/'));
+        }
+        else
+        {
+            $this->session->set_flashdata('message', $this->ion_auth->errors());
+            var_dump($this->ion_auth->errors());
+            die();
+        }
+        redirect(base_url('/'));
+    }
 
 	// redirect if needed, otherwise display the user list
 	public function index()
