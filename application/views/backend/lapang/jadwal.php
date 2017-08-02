@@ -16,6 +16,7 @@ $this->load->view('backend/template/head');
 <!-- bootstrap wysihtml5 - text editor -->
 <link href="<?php echo base_url('assets/AdminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') ?>" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url('assets/AdminLTE/plugins/datatables/dataTables.bootstrap.css') ?>" rel="stylesheet" type="text/css" />
+<link href="<?php echo base_url('assets/plugins/bootstrap-datepicker-master/dist/css/bootstrap-datepicker.css')?>" rel="stylesheet">
 <style type="text/css">
     .remove-img-preview{
         background-image: url('../../storage/images/icon/remove-red.png') ;
@@ -49,7 +50,7 @@ $this->load->view('backend/template/sidebar');
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
         <li > <a href="<?php echo base_url('admin/lapang')?>">Lapang</a></li>
-        <li class="detail">Detail</li>
+        <li class="detail">Jadwal</li>
     </ol>
 </section>
 
@@ -57,6 +58,20 @@ $this->load->view('backend/template/sidebar');
 <section class="content">
   <div class="box">
     <div class="box-header">
+        <form method="post" action="<?php echo base_url('admin/lapang/detail/jadwal').'/'.$lapang->id ?>">
+          <div class="form-group col-md-12 col-xs-12">
+            <label class="control-label">Tanggal</label>
+          </div>
+          <div class="form-group col-md-4 col-xs-12">
+            <input type="text" name="tanggal" class="form-control" id="datetimepicker" value="<?php echo $tanggal ?>">
+          </div> 
+          <div class="form-group col-md-6 col-xs-12">
+            <button class="btn btn-default">Cari</button>  
+          </div>
+        </form>
+      <?php if (count($jadwal)<1) { ?>
+        <h4 class="text-center">Maaf Tidak Tersedia</h4>
+      <?php  } ?>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
@@ -81,6 +96,7 @@ $this->load->view('backend/template/sidebar');
                   <form action="<?php echo base_url('booking') ?>" method="post">
                     <input type="hidden" name="id_lapang" value="<?php echo $val['detail_id'] ?>">
                     <input type="hidden" name="jam" value="<?php echo $val['jam'] ?>">
+                    <input type="hidden" name="tanggal_reservasi" value="<?php echo $val['tanggal_reservasi'] ?>">
                     <input type="submit" class="btn btn-info btn-xs" name="pesan" value="Pesan">
                   </form>
                 <?php } ?>
@@ -146,8 +162,20 @@ $this->load->view('backend/template/js');
 <script src="<?php echo base_url('assets/AdminLTE/plugins/iCheck/icheck.min.js') ?>" type="text/javascript"></script>
 <script src="<?php echo base_url('assets/AdminLTE/plugins/datatables/jquery.dataTables.js') ?>" type="text/javascript"></script>
 <script src="<?php echo base_url('assets/AdminLTE/plugins/datatables/dataTables.bootstrap.js') ?>" type="text/javascript"></script>
+<script src="<?php echo base_url('assets/plugins/bootstrap-datepicker-master/dist/js/bootstrap-datepicker.js')?>"></script>
 <script>
   $(function () {
+    var currentDate= new Date();
+        $('#datetimepicker').datepicker({
+            todayBtn: true,
+            clearBtn: true,
+            language: "id",
+            format: "yyyy-mm-dd",
+            minDate: currentDate,
+            autoclose: true,
+            todayHighlight: true,
+            toggleActive: true
+        });
     $('#example1').DataTable();
   })
 </script>

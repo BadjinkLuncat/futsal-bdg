@@ -14,6 +14,7 @@
   <!-- Bootstrap Core CSS -->
   <link href="<?php echo base_url('assets/frontend/css/bootstrap.min.css') ?>" rel="stylesheet">
   <link href="<?php echo base_url('assets/frontend/css/style.css') ?>" rel="stylesheet">
+  <link href="<?php echo base_url('assets/plugins/bootstrap-datepicker-master/dist/css/bootstrap-datepicker.css')?>" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -126,44 +127,60 @@
           </section>
         </div>
         
-        <div class="col-md-12">
+        <div class="col-md-12"> 
           <hr>
-          <?php foreach ($jadwal as $key => $value) { ?>
-          <div class="col-md-6 col-xs-12">
-            <h4 style="text-align: center;"> Lapang <?php echo $key+1 ?></h4>
-            <h4 style="text-align: center;"> Harga : Rp <?php echo $detail_lapang[$key]->harga ?></h4>
-            <div class="table-responsive">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Jam</th>
-                    <th>Status</th>
-                    <th>PIlihan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($value as $k => $val) { ?>
-                  <tr>
-                    <td><?php echo $val['number'] ?></td>
-                    <td><?php echo $val['jam'] ?></td>
-                    <td><?php echo $val['status'] ?></td>
-                    <td>
-                      <?php if ($val['status']=='Kosong'){ ?>
-                        <form action="<?php echo base_url('booking') ?>" method="post">
-                          <input type="hidden" name="id_lapang" value="<?php echo $val['detail_id'] ?>">
-                          <input type="hidden" name="jam" value="<?php echo $val['jam'] ?>">
-                          <input type="submit" class="btn btn-info btn-xs" name="pesan" value="Pesan">
-                        </form>
-                      <?php } ?>
-                    </td>
-                  </tr>
-                <?php } ?>
-                </tbody>
-              </table>
-            </div>
+          <div class="col-md-12">
+            <form method="post" action="<?php echo base_url('lapang').'/'.$lapang->id ?>">
+              <div class="form-group col-md-12 col-xs-12">
+                <label class="control-label">Tanggal</label>
+              </div>
+              <div class="form-group col-md-6 col-xs-12">
+                <input type="text" name="tanggal" class="form-control" id="datetimepicker" value="<?php echo $tanggal ?>">  
+              </div>
+              <div class="form-group col-md-6 col-xs-12">
+                <button class="btn btn-default">Cari</button>  
+              </div>
+            </form>
           </div>
-        <?php } ?>
+          <?php if (count($jadwal)<1) { ?>
+            <h4 class="text-center">Maaf Tidak Tersedia</h4>
+          <?php  } ?>
+          <?php foreach ($jadwal as $key => $value) { ?>
+            <div class="col-md-6 col-xs-12">
+              <h4 style="text-align: center;"> Lapang <?php echo $key+1 ?></h4>
+              <h4 style="text-align: center;"> Harga : Rp <?php echo $detail_lapang[$key]->harga ?></h4>
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Jam</th>
+                      <th>Status</th>
+                      <th>PIlihan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <?php foreach ($value as $k => $val) { ?>
+                    <tr>
+                      <td><?php echo $val['number'] ?></td>
+                      <td><?php echo $val['jam'] ?></td>
+                      <td><?php echo $val['status'] ?></td>
+                      <td>
+                        <?php if ($val['status']=='Kosong'){ ?>
+                          <form action="<?php echo base_url('booking') ?>" method="post">
+                            <input type="hidden" name="id_lapang" value="<?php echo $val['detail_id'] ?>">
+                            <input type="hidden" name="tanggal_reservasi" value="<?php echo $val['tanggal_reservasi'] ?>">
+                            <input type="submit" class="btn btn-info btn-xs" name="pesan" value="Pesan">
+                          </form>
+                        <?php } ?>
+                      </td>
+                    </tr>
+                  <?php } ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <?php } ?>
         </div>
       </div>
     </div>
@@ -172,15 +189,6 @@
   <footer>
     <div class="row">
       <div class="col-md-6 col-md-offset-3 text-center">
-        <p class="social">
-          <a href=""><img src="<?php echo base_url('assets/frontend/img/fb.png') ?>"></a>
-          <a href=""><img src="<?php echo base_url('assets/frontend/img/ig.png') ?>"></a>
-          <a href=""><img src="<?php echo base_url('assets/frontend/img/twit.png') ?>"></a>
-        </p>
-        <p class="white">
-          Duis cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-          sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
       </div>
       
     </div>
@@ -189,6 +197,7 @@
   <script src="<?php echo base_url('assets/frontend/js/jquery.js')?>"></script>
   <!-- Bootstrap Core JavaScript -->
   <script src="<?php echo base_url('assets/frontend/js/bootstrap.min.js')?>"></script>
+  <script src="<?php echo base_url('assets/plugins/bootstrap-datepicker-master/dist/js/bootstrap-datepicker.js')?>"></script>
   <script async defer src ="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuFr8ruixp-T6l2wSB1tYRunNVM6ik7hs&callback=initMap"></script>
   <script type="text/javascript">
     function initMap() {
@@ -208,6 +217,17 @@
   </script>
    <script type="text/javascript">
     $(function () {
+        var currentDate= new Date();
+        $('#datetimepicker').datepicker({
+            todayBtn: true,
+            clearBtn: true,
+            language: "id",
+            format: "yyyy-mm-dd",
+            minDate: currentDate,
+            autoclose: true,
+            todayHighlight: true,
+            toggleActive: true
+        });
         $('a[href="#search"]').on('click', function(event) {
             event.preventDefault();
             $('#search').addClass('open');

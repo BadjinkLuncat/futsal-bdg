@@ -207,31 +207,42 @@ class Lapang extends CI_Controller {
 
     public function jadwal($id)
     {
+        $tanggal=date('Y-m-d');
+        if ($this->input->post('tanggal')){
+            $tanggal=date('Y-m-d',strtotime($this->input->post('tanggal')));
+        }
         $this->load->model('lapang_model');
         $this->load->model('detail_lapang_model');
         $this->load->model('reservasi_model');
         $detail_lapang=$this->detail_lapang_model->find($id);
         $lapang=$this->lapang_model->find($detail_lapang->id_lapang);
-        $booking=$this->reservasi_model->get($id);
+        $booking=$this->reservasi_model->getByField($id,$tanggal);
         $data['lapang']=$lapang;
+        $data['tanggal']=$tanggal;
         $data['peta']=explode(',', $lapang->lat_long);
         $data['detail_lapang']=$detail_lapang;
         $jadwal=[];
         $open=intval(date('G',strtotime($lapang->buka)));
         $close=intval(date('G',strtotime($lapang->tutup)));
         $i=1;
-        for ($open; $open < $close; $open++) {
-            $hour=date('G:i',mktime($open,0,0,0,0,0)); 
-            $jadwal[$open]['detail_id']=$detail_lapang->id;
-            $jadwal[$open]['number']=$i++;
-            $jadwal[$open]['jam']=$hour;
-            $jadwal[$open]['status']='Kosong';
-            if ($booking){
-                foreach ($booking as $k => $val) {
-                    if (date_format(date_create($val->tanggal_reservasi),'G:i')== $hour){
-                        $jadwal[$open]['status']='Isi';
-                        $jadwal[$open]['jam']=date_format(date_create($val->tanggal_reservasi),'G:i');
+        if ($tanggal >= date('Y-m-d')){
+            for ($open; $open < $close; $open++) {
+                $hour=date('G:i',mktime($open,0,0,0,0,0)); 
+                $jadwal[$open]['detail_id']=$detail_lapang->id;
+                $jadwal[$open]['number']=$i++;
+                $jadwal[$open]['jam']=$hour;
+                $jadwal[$open]['status']='Kosong';
+                $jadwal[$open]['tanggal_reservasi']=$tanggal.' '.$hour;
+                if ($booking){
+                    foreach ($booking as $k => $val) {
+                        if (date_format(date_create($val->tanggal_reservasi),'G:i')== $hour){
+                            $jadwal[$open]['status']='Isi';
+                            $jadwal[$open]['jam']=date_format(date_create($val->tanggal_reservasi),'G:i');
+                        }
                     }
+                }
+                if ($tanggal== date('Y-m-d') && date('G',mktime($open,0,0,0,0,0)) <= date('G') ){
+                    $jadwal[$open]['status']='Tidak Tersedia';
                 }
             }
         }
